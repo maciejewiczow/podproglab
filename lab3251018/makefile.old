@@ -1,0 +1,14 @@
+CC = gcc
+CFFLAGS = 
+
+calc: calc.o
+	$(CC) calc.o -o calc
+
+calc.o: calc.c
+	$(CC) calc.c -c
+
+clean:
+	rm calc calc.o
+
+run:
+	"./calc"
