@@ -1,4 +1,6 @@
 #!/bin/bash
 
-gcc -Wall -Wextra "$1/$2.c" -o "$1/$2.out" -lm
-"$1/$2.out"
+pathNoExt=$(echo "$1" | cut -f 1 -d '.')
+
+gcc -Wall -Wextra "$pathNoExt.c" -o "$pathNoExt.out" -lm
+"$pathNoExt.out"

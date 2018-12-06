@@ -6,8 +6,8 @@
         {
             "label": "C bouild&run",
             "type": "shell",
-            "command": "${workspaceFolder}/compile.sh",
-            "args": ["${relativeFile}", "${fileBasenameNoExtension}"],
+            "command": "./compile.sh",
+            "args": ["${relativeFile}"],
 
             "group": { "kind": "build", "isDefault": true },
             "presentation": {
@@ -15,7 +15,18 @@
                 "panel": "dedicated",
                 "focus": true
             },
-            "problemMatcher": ["$gcc"]
+            "problemMatcher": {
+                "owner": "cpp",
+                "fileLocation": ["relative", "${cwd}"],
+                "pattern": {
+                    "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error|note):\\s+(.*)$",
+                    "file": 1,
+                    "line": 2,
+                    "column": 3,
+                    "severity": 4,
+                    "message": 5
+                }
+            }
         }
     ]
 }
