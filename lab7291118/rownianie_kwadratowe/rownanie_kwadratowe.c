@@ -7,14 +7,17 @@
 
 #if 1
 #    define SCALAR double
+#    define FORMAT_IN "%lf"
 #    define FORMAT_OUT "%5.15lf"
 #    define SMALL_NUMBER DBL_EPSILON * 1.e+1
 #else
 #    define SCALAR float
+#    define FORMAT_IN "%f"
 #    define FORMAT_OUT "%5.15f"
-#    define SMALL_NUMBER FLT_EPSILON
+#    define SMALL_NUMBER FLT_EPSILON * 1.e+1
 #endif
 
+#define DEBUG_PRINTS true
 
 typedef struct Cplx {
     SCALAR re;
@@ -34,32 +37,11 @@ typedef struct QRoots {
 
 QuadraticRoots solveQuadraticEquation(SCALAR, SCALAR, SCALAR);
 void printSolution(const QuadraticRoots*);
-bool chcekSolution(SCALAR, SCALAR, SCALAR, const QuadraticRoots*);
+bool checkSolution(SCALAR, SCALAR, SCALAR, const QuadraticRoots*);
 Complex evaluateQuadratic(const Complex*, const Complex*, const Complex*, const Complex*);
 
 bool veryClose(SCALAR, SCALAR, SCALAR);
 
-#if 0
-int main()
-{
-    // clang-format off
-    Complex a = {.re = 1},
-            b = {.re = 2},
-            c = {.re = -5},
-            x1 = {.re = 1.449489742783178},
-            x2 = {.re = -3.449489742783178};
-
-    Complex res1 = evaluateQuadratic(&a, &b, &c, &x1);
-    Complex res2 = evaluateQuadratic(&a, &b, &c, &x2);
-
-    printf("Res1: ");
-    complex_print(&res1);
-    printf("\nRes2: ");
-    complex_print(&res2);
-    printf("\n");
-    return 0;
-}
-#else
 int main(void)
 {
     // rozwiązanie równania kwadratowego ax^2 + bx + c = 0
@@ -68,37 +50,37 @@ int main(void)
 
     SCALAR a, b, c;
     printf("\nPodaj parametr a: ");
-    scanf("%lf", &a);
+    scanf(FORMAT_IN, &a);
     printf("Podaj parametr b: ");
-    scanf("%lf", &b);
+    scanf(FORMAT_IN, &b);
     printf("Podaj parametr c: ");
-    scanf("%lf", &c);
+    scanf(FORMAT_IN, &c);
 
     QuadraticRoots solution = solveQuadraticEquation(a, b, c);
 
-    // debug print
+#if DEBUG_PRINTS
     printf("\nSolution:\ncount = %d\nx1 = ", solution.count);
     complex_print(&solution.x1);
     printf("\nx2 = ");
     complex_print(&solution.x2);
     printf("\n\n");
+#endif
 
     printSolution(&solution);
 
     printf("\n[Checker] Solution is ");
-    if (!chcekSolution(a, b, c, &solution)) {
+    if (!checkSolution(a, b, c, &solution)) {
         printf("wrong!\n");
         return -1;
     }
     printf("right\n");
     return 0;
 }
-#endif
 
 void complex_print(const Complex* this)
 {
     char sign = (this->im >= 0) ? '+' : '-';
-    printf(FORMAT_OUT" %c "FORMAT_OUT"i", this->re, sign, fabs(this->im));
+    printf(FORMAT_OUT " %c " FORMAT_OUT "i", this->re, sign, fabs(this->im));
 }
 
 bool complex_equals(const Complex* a, const Complex* b)
@@ -144,7 +126,7 @@ Complex complex_multiply(const Complex* a, const Complex* b)
 
 bool veryClose(SCALAR a, SCALAR b, SCALAR tolerance)
 {
-    return a == b || fabs(a - b) < tolerance;
+    return a == b || (sizeof(SCALAR) == 4) ? fabsf(a - b) < tolerance : fabs(a - b) < tolerance;
 }
 
 QuadraticRoots solveQuadraticEquation(SCALAR a, SCALAR b, SCALAR c)
@@ -271,7 +253,7 @@ Complex evaluateQuadratic(const Complex* a, const Complex* b, const Complex* c, 
     return complex_add(3, axSquared, bx, *c);
 }
 
-bool chcekSolution(SCALAR realA, SCALAR realB, SCALAR realC, const QuadraticRoots* solution)
+bool checkSolution(SCALAR realA, SCALAR realB, SCALAR realC, const QuadraticRoots* solution)
 {
     bool aCloseToZero = veryClose(realA, 0, SMALL_NUMBER),
          bCloseToZero = veryClose(realB, 0, SMALL_NUMBER),
