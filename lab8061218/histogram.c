@@ -3,7 +3,12 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define ARRAY_LENGTH 100
+#define ARRAY_LENGTH 200
+
+#define DEBUG_PRINTS false
+
+#define RANGE_START '0'
+#define RANGE_END 'z'
 
 typedef struct Entry {
     char key;
@@ -22,7 +27,9 @@ int dict_addEntry(Dictionary*, char, int);
 void dict_print(const Dictionary*);
 void dict_sort(Dictionary*);
 
-void fillWithRandomValues(char*, const int, const char, const char);
+void fillArrayWithRandomValues(char*, const int, const char, const char);
+
+void printHistogramFromDict(const Dictionary*);
 
 int main(void)
 {
@@ -30,11 +37,11 @@ int main(void)
     srand(time(0));
 
     Dictionary dict;
-    dict_new(&dict, ('z' - 'a'));
+    dict_new(&dict, (RANGE_END - RANGE_START) + 1);
 
-    fillWithRandomValues(array, ARRAY_LENGTH, 'a', 'z');
+    fillArrayWithRandomValues(array, ARRAY_LENGTH, RANGE_START, RANGE_END);
 
-    printf("%s\n", array);
+    printf("%s\n\n", array);
 
     for (int i = 0; i < ARRAY_LENGTH; i++) {
         DictEntry* e = dict_getEntryByKey(&dict, array[i]);
@@ -53,17 +60,33 @@ int main(void)
     }
 
     dict_sort(&dict);
+
+#if DEBUG_PRINTS
     dict_print(&dict);
+#endif
+
+    printHistogramFromDict(&dict);
 
     dict_delete(&dict);
 
     return 0;
 }
 
-void fillWithRandomValues(char* arr, const int length, const char min, const char max)
+void fillArrayWithRandomValues(char* arr, const int length, const char min, const char max)
 {
     for (int i = 0; i < length; i++)
         arr[i] = (char) (random() % (max - min + 1)) + min;
+}
+
+void printHistogramFromDict(const Dictionary* dict)
+{
+    for (int i = 0; i < dict->end; i++) {
+        DictEntry record = dict->entries[i];
+        printf("%c  ", record.key);
+        for (int j = 0; j < record.value; j++)
+            printf("*");
+        printf("\n");
+    }
 }
 
 void dict_new(Dictionary* this, int numberOfRecords)
