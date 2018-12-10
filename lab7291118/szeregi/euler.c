@@ -17,6 +17,8 @@
 
 #define ITERATION_LIMIT 1.e+8
 
+#define DEBUG_PRINTS false
+
 SCALAR eulerFromSeries(int n);
 SCALAR eulerFromErrorTolerance(SCALAR tolerance);
 bool veryClose(SCALAR, SCALAR, SCALAR);
@@ -25,7 +27,7 @@ int main(void)
 {
     SCALAR precision;
 
-    printf("Hello, please tell me, how precisely should I calculate e for you:\n");
+    printf("Hello\nPlease tell me, how precisely should I calculate e for you:\n");
     scanf(FORMAT_IN, &precision);
 
     SCALAR result = eulerFromErrorTolerance(precision);
@@ -58,7 +60,11 @@ SCALAR eulerFromErrorTolerance(SCALAR tolerance)
     int n = 1;
     do {
         result = eulerFromSeries(n);
-        // printf("n: %d " FORMAT_OUT "\n", n, result);
+
+#if DEBUG_PRINTS
+        printf("n: %d " FORMAT_OUT "\n", n, result);
+#endif
+
         n++;
     } while (n < ITERATION_LIMIT && !veryClose(result, M_E, tolerance));
 
