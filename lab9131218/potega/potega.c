@@ -1,5 +1,5 @@
 #include <limits.h>
-#include <math.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -11,7 +11,7 @@
  * @param int m - podstawa potęgowania
  * @param int n - wykładnik
  *
- * @returns int - wynik potęgowania
+ * @returns int - wynik potęgowania lub INT_MAX
  */
 int potega_int(int m, int n);
 
@@ -25,6 +25,16 @@ int potega_int(int m, int n);
  * @returns int - wartość wielomianu lub INT_MAX, jeżeli wartość była zbyt duża dla typu int
  */
 int wartosc_wielomianu(int* wspolczynniki, unsigned int stopien, int x);
+
+/**
+ * Sprawdza, czy wynik mnożenia 2 liczb przekroczy wartość INT_MAX
+ *
+ * @param int a - pierwsza liczba
+ * @param int b - druga liczba
+ *
+ * @returns bool - wartość logiczna określająca, czy nastąpi overflow czy nie
+ */
+bool willMultiplicationOverflowInt(int a, int b);
 
 int main(void)
 {
@@ -62,10 +72,7 @@ int main(void)
         if (j == 1) {
             printf("x + ");
         }
-        else if (j == 0) {
-            printf("%d", wspolcz[i]);
-        }
-        else {
+        else if (j != 0) {
             printf("x^%d + ", j);
         }
     }
@@ -86,15 +93,17 @@ int main(void)
     return 0;
 }
 
+bool willMultiplicationOverflowInt(int a, int b)
+{
+    return (a != 0 && b != 0 && (a * b) / a != b);
+}
+
 int potega_int(int podstawa, int wykladnik)
 {
     int potega = 1;
-    unsigned int controll;
     for (int i = 1; i <= wykladnik; i++) {
+        if (willMultiplicationOverflowInt(potega, podstawa)) return INT_MAX;
         potega *= podstawa;
-        controll = (unsigned int) abs(potega);
-
-        if (controll > INT_MAX) return INT_MAX;
     }
     return potega;
 }
@@ -103,9 +112,11 @@ int wartosc_wielomianu(int* a, unsigned int stopien, int x)
 {
     if (stopien == 0) return 0;
     if (stopien == 1) return a[0];
+    if (x == 0) return a[stopien - 1];
 
     int result = a[stopien - 1];
     for (int i = stopien - 2; i >= 0; i--) {
+        if (willMultiplicationOverflowInt(x, result)) return INT_MAX;
         result = a[i] + x * result;
     }
 
