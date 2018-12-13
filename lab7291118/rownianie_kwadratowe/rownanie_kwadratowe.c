@@ -17,7 +17,7 @@
 #    define SMALL_NUMBER FLT_EPSILON * 1.e+1
 #endif
 
-#define DEBUG_PRINTS true
+#define DEBUG_PRINTS false
 
 typedef struct Cplx {
     SCALAR re;
@@ -135,68 +135,54 @@ QuadraticRoots solveQuadraticEquation(SCALAR a, SCALAR b, SCALAR c)
          cCloseToZero = veryClose(c, 0, SMALL_NUMBER);
 
     if (aCloseToZero && bCloseToZero && cCloseToZero) {
-        QuadraticRoots result = {.count = INT_MAX};
-        return result;
+        return (QuadraticRoots){.count = INT_MAX};
     }
 
     if (aCloseToZero && bCloseToZero) {
-        QuadraticRoots result = {.count = 0};
-        return result;
+        return (QuadraticRoots){.count = 0};
     }
 
     if (aCloseToZero) {
         // clang-format off
-        QuadraticRoots result = {
+        return (QuadraticRoots) {
             .count = 1,
             .x1 = {.re = -c / b,}
         };
         // clang-format on
-
-        return result;
     }
 
-    SCALAR delta;
-    delta = b * b - 4 * a * c;
+    SCALAR delta = b * b - 4 * a * c;
+    SCALAR deltaSqrt = sqrt(fabs(delta));
+
     if (delta < 0) {
-
-        SCALAR deltaSqrt = sqrt(-delta);
-
         // clang-format off
-        QuadraticRoots result = {
+        return (QuadraticRoots) {
             .count = 2,
             .x1 = {
-                .re = -b/2*a,
-                .im = deltaSqrt/2*a
+                .re = -b/(2*a),
+                .im = deltaSqrt/(2*a)
             },
             .x2 = {
-                .re = -b/2*a,
-                .im = -deltaSqrt/2*a
+                .re = -b/(2*a),
+                .im = -deltaSqrt/(2*a)
             }
         };
-        // clang-format on
-        return result;
     }
     if (delta == 0) {
-        // clang-format off
         QuadraticRoots result = {
             .count = 2,
-            .x1 = {.re = -b/2*a},
+            .x1 = {.re = -b/(2*a)},
             .x2 = result.x1
         };
-        // clang-format on
         return result;
     }
 
-    SCALAR deltaSqrt = sqrt(delta);
-
-    // clang-format off
-    QuadraticRoots result = {
+    return (QuadraticRoots) {
         .count = 2,
-        .x1 = {.re = (-b + deltaSqrt)/2*a},
-        .x2 = {.re = (-b - deltaSqrt)/2*a}
+        .x1 = {.re = (-b + deltaSqrt)/(2*a)},
+        .x2 = {.re = (-b - deltaSqrt)/(2*a)}
     };
     // clang-format on
-    return result;
 }
 
 void printSolution(const QuadraticRoots* solution)
@@ -232,7 +218,6 @@ void printSolution(const QuadraticRoots* solution)
     }
 
     printf("zespolone:\n");
-
 
     printf("x1 = ");
     complex_print(&solution->x1);
