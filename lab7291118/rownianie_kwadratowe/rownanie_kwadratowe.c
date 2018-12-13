@@ -187,8 +187,7 @@ QuadraticRoots solveQuadraticEquation(SCALAR a, SCALAR b, SCALAR c)
 
 void printSolution(const QuadraticRoots* solution)
 {
-    printf("\n");
-    if (!(solution->count == 2)) {
+    if (solution->count != 2) {
         printf("Równanie liniowe - ");
 
         switch (solution->count) {
@@ -246,19 +245,17 @@ bool checkSolution(SCALAR realA, SCALAR realB, SCALAR realC, const QuadraticRoot
          cCloseToZero = veryClose(realC, 0, SMALL_NUMBER);
 
     // clang-format off
-    Complex a = {.re = realA, .im = 0},
-            b = {.re = realB, .im = 0},
-            c = {.re = realC, .im = 0};
+    Complex a = {.re = realA},
+            b = {.re = realB},
+            c = {.re = realC};
     // clang-format on
 
     if (solution->count == 0) return aCloseToZero && bCloseToZero && !cCloseToZero;
     if (solution->count == 1) return veryClose(realB * solution->x1.re + realC, 0, SMALL_NUMBER);
     if (solution->count == INT_MAX) return aCloseToZero && bCloseToZero && cCloseToZero;
 
-    Complex x1 = solution->x1, x2 = solution->x2;
-
-    Complex result1 = evaluateQuadratic(&a, &b, &c, &x1);
-    Complex result2 = evaluateQuadratic(&a, &b, &c, &x2);
+    Complex result1 = evaluateQuadratic(&a, &b, &c, &solution->x1);
+    Complex result2 = evaluateQuadratic(&a, &b, &c, &solution->x2);
 
     return veryClose(result1.re, 0, SMALL_NUMBER) && veryClose(result1.im, 0, SMALL_NUMBER) &&
            veryClose(result2.re, 0, SMALL_NUMBER) && veryClose(result2.im, 0, SMALL_NUMBER);
