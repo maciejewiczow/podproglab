@@ -5,8 +5,8 @@
 
 /**
  * Funkcja oblicza wartość n-tej potgęgi liczby m
- * Jeżeli wynik w trakcie obliczeń wartość prekroczy INT_MAX, jest zwracana w momencie osiągnięcia
- * INT_MAX
+ * Jeżeli wynik w trakcie obliczeń wartość prekroczy INT_MAX, to jest zwracany w momencie
+ * osiągnięcia INT_MAX
  *
  * @param int m - podstawa potęgowania
  * @param int n - wykładnik
@@ -19,7 +19,7 @@ int potega_int(int m, int n);
  * Oblicza wratość wielomianu stopnia stopien o wspolczynnikach zawartych w tablicy dla argumentu x
  *
  * @param int* wspolczynniki - tablica współczynników wielomianu
- * @param unsigned int stopien - stopien wielomianu (długosć tablicy wspolczynnikow)
+ * @param unsigned int stopien - stopien wielomianu (jednocześnie długosć tablicy wspolczynnikow)
  * @param int x - argument wielomianu
  *
  * @returns int - wartość wielomianu lub INT_MAX, jeżeli wartość była zbyt duża dla typu int
