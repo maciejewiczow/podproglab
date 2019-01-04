@@ -96,6 +96,7 @@ void board_loadFromFile(Board* this, FILE* file)
                 break;
             case '1':
                 this->cells[row][col] = true;
+                // fall through
             case '0':
                 col++;
                 break;
