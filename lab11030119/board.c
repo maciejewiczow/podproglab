@@ -52,6 +52,16 @@ void board_print(const Board* this)
     }
 }
 
+void board_printUpdate(const Board* this)
+{
+    // erase previously printed board
+    for (unsigned int i = 0; i < this->size; i++)
+        printf("\33[2K\r\033[A");
+
+    // print new one
+    board_print(this);
+}
+
 unsigned int board_getSizeFromFile(FILE* file)
 {
     if (file == NULL) return 0;
@@ -64,6 +74,7 @@ unsigned int board_getSizeFromFile(FILE* file)
         result++;
     }
 
+    fseek(file, 0, SEEK_SET);
     return ceil((double) result / 2);
 }
 
@@ -75,8 +86,8 @@ void board_loadFromFile(Board* this, FILE* file)
     col = row = 0;
 
     while ((c = getc(file)) != EOF) {
-        if (col == this->size * 2 - 1) col = 0;
-        if (row == this->size * 2 - 1) break;
+        if (col == this->size) col = 0;
+        if (row == this->size) break;
 
         switch (c) {
             case '\n':
@@ -89,6 +100,7 @@ void board_loadFromFile(Board* this, FILE* file)
                 col++;
                 break;
         }
-        printf("%d row: %u col: %u\n", c, row, col);
     }
+
+    fseek(file, 0, SEEK_SET);
 }

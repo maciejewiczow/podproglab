@@ -9,6 +9,9 @@
 /**
  * This struct represents board, on which the game of life will be taking place
  *
+ * unsigned int size - the side length of board
+ * bool** cells - 2D array of booleans, in which value of true represents a living cell, and false
+ * dead one
  */
 typedef struct board {
     unsigned int size;
@@ -35,6 +38,11 @@ void board_delete(Board*);
  * Prints whole board to stdout
  */
 void board_print(const Board*);
+
+/**
+ * Erases previously printed board and prints a new one
+ */
+void board_printUpdate(const Board*);
 
 /**
  * Loads board state from specified file
