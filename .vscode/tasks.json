@@ -7,7 +7,7 @@
             "label": "C build&run",
             "type": "shell",
             "command": "./compile.sh",
-            "args": ["${relativeFile}"],
+            "args": ["${relativeFile}", "${fileDirname}"],
 
             "group": { "kind": "build", "isDefault": true },
             "presentation": {
