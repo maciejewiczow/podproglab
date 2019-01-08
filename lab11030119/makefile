@@ -1,14 +1,16 @@
 CC= gcc
-CFLAGS= -Wall -Wextra
+CFLAGS= -Wall -Wextra -g
 LIB= -lm
 
 FILES= main.c board.c
 OUT= gameOfLife.out
 
-buildAndRun:
-	$(CC) $(CFLAGS) $(FILES) -o $(OUT) $(LIB)
+run: lifegame
 	gnome-terminal --profile holdopen -- ./$(OUT)
 	wmctrl -a 'Terminal'
+
+lifegame:
+	$(CC) $(CFLAGS) $(FILES) -o $(OUT) $(LIB)
 
 clean:
 	rm $(OUT)
