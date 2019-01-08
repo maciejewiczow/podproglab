@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -32,7 +33,6 @@ void board_delete(Board* this)
     free(this->cells);
 }
 
-// @TODO make this method update console content instead of printing new one on each call
 void board_print(const Board* this)
 {
     if (this == NULL) return;
@@ -56,7 +56,7 @@ void board_printUpdate(const Board* this)
 {
     // erase previously printed board
     for (unsigned int i = 0; i < this->size; i++)
-        printf("\33[2K\r\033[A");
+        printf(CLEAR_LINE_CHAR "\r" MOVE_COURSOR_UP_CHAR);
 
     // print new one
     board_print(this);
@@ -74,8 +74,17 @@ unsigned int board_getSizeFromFile(FILE* file)
         result++;
     }
 
+    // revind file pointer, to avoid errors with loading board from the same struct later
     fseek(file, 0, SEEK_SET);
     return ceil((double) result / 2);
+}
+
+void board_countAliveCells(Board* this)
+{
+    this->cellCount = 0;
+    for (unsigned int i = 0; i < this->size; i++)
+        for (unsigned int j = 0; j < this->size; j++)
+            if (this->cells[i][j]) this->cellCount++;
 }
 
 void board_loadFromFile(Board* this, FILE* file)
@@ -96,6 +105,7 @@ void board_loadFromFile(Board* this, FILE* file)
                 break;
             case '1':
                 this->cells[row][col] = true;
+                this->cellCount++;
                 // fall through
             case '0':
                 col++;
@@ -103,5 +113,17 @@ void board_loadFromFile(Board* this, FILE* file)
         }
     }
 
+    // bring the file struct to previous state, because why not
     fseek(file, 0, SEEK_SET);
+}
+
+void board_copy(const Board* src, Board* dest)
+{
+    assert(src->size == dest->size);
+
+    dest->cellCount = src->cellCount;
+
+    for (unsigned int i = 0; i < dest->size; i++)
+        for (unsigned int j = 0; j < dest->size; j++)
+            dest->cells[i][j] = src->cells[i][j];
 }
