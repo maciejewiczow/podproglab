@@ -1,49 +1,30 @@
 #include <assert.h>
+#include <ctype.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
 
+#include "arguments.h"
 #include "board.h"
-
-typedef struct settings {
-    unsigned int cellStayAliveNumber;
-    unsigned int createNewCellNumber;
-    struct timespec delay;
-    bool neighbourhood[3][3];
-} Settings;
 
 void simulate(Board*, Board*, const Settings*);
 unsigned int countNeighbouringCells(const Board*, unsigned int, unsigned int, const bool[3][3]);
 void clearLines(unsigned int);
+bool isAnyOf(int, char*);
 
-int main(/* int argCount, char** args */)
+int main(int argCount, char* args[])
 {
-    // @TODO get board size and other params from stdin or script arguments
-    const char* filename = "board.txt";
-    const unsigned int delayMs = 500;
+    Settings setup;
 
-    const Settings setup = {
-        .cellStayAliveNumber = 23,
-        .createNewCellNumber = 3,
-        .delay =
-            {
-                .tv_sec = 0,
-                .tv_nsec = delayMs * 1000000L,
-            },
-        .neighbourhood =
-            {
-                {1, 1, 1},
-                {1, 0, 1},
-                {1, 1, 1},
-            },
-    };
+    initalizeWithArguments(argCount, args, &setup);
 
     Board boardCurrent, boardNext;
 
-    FILE* initialStateFile = fopen(filename, "r");
+    FILE* initialStateFile = fopen(setup.boardFilename, "r");
 
     if (initialStateFile == NULL) {
-        printf("Could not open file %s\n", filename);
+        printf("Could not open file %s\n", setup.boardFilename);
         return -1;
     }
 
@@ -65,7 +46,7 @@ int main(/* int argCount, char** args */)
 
     fclose(initialStateFile);
 
-    printf("Board initial state loaded from %s\n", filename);
+    printf("Board initial state loaded from %s\n", setup.boardFilename);
     printf("Size read from file: %ux%u\n\n", size, size);
     board_print(&boardCurrent);
 
@@ -96,8 +77,10 @@ unsigned int countNeighbouringCells(
     unsigned int result = 0;
 
     for (int y = -1; y <= 1; y++) {
+        // skip this index if checked cell is on the edge of board
         if (i == 0 || i + 1 == b->size) continue;
         for (int x = -1; x <= 1; x++) {
+            // also skip
             if (j == 0 || j + 1 == b->size) continue;
             if (b->cells[y + i][x + j] && neighbourhood[y + 1][x + 1]) result++;
         }
@@ -116,15 +99,16 @@ void simulate(Board* curr, Board* next, const Settings* settings)
 
         for (unsigned int i = 0; i < curr->size; i++) {
             for (unsigned int j = 0; j < curr->size; j++) {
-                unsigned int neighbours =
+                unsigned int neighbCount =
                     countNeighbouringCells(curr, i, j, settings->neighbourhood);
 
-                // temporary hard-coded values - 23/3 - Conoway's rules
-                // @REMINDER to change it to something more portable later on
-                if (curr->cells[i][j] && !(neighbours == 2 || neighbours == 3))
+                // alive cells tested against dying
+                if (curr->cells[i][j] && !isAnyOf(neighbCount, settings->cellSurviveNumbers))
                     next->cells[i][j] = false;
 
-                if (!curr->cells[i][j] && neighbours == 3) next->cells[i][j] = true;
+                // dead cell tested against beeing born
+                if (!curr->cells[i][j] && isAnyOf(neighbCount, settings->createNewCellNumbers))
+                    next->cells[i][j] = true;
             }
         }
         board_countAliveCells(next);
@@ -134,7 +118,30 @@ void simulate(Board* curr, Board* next, const Settings* settings)
         printf(CLEAR_LINE_CHAR "\r");
         board_printUpdate(curr);
         printf("Time t = %lu", t);
-        fflush(stdout);
-        nanosleep(&settings->delay, NULL);
+
+        if (settings->delay.tv_sec == 0 && settings->delay.tv_nsec == 0) {
+            getchar();
+            printf(MOVE_COURSOR_UP_CHAR);
+        }
+        else {
+            // force printf to print immeditally, instead of keeping text in a buffer
+            // because it would negate the delay between time ticks
+            fflush(stdout);
+            nanosleep(&settings->delay, NULL);
+        }
     }
+}
+
+bool isAnyOf(int x, char* possible)
+{
+    bool result = false;
+
+    for (int i = 0; possible[i] != '\0'; i++) {
+        if (!isdigit(possible[i])) continue;
+        char curr = possible[i] - '0';
+
+        result = result || (curr == x);
+    }
+
+    return result;
 }
