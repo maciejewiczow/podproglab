@@ -72,9 +72,18 @@ void initalizeWithArguments(int argc, char* args[], Settings* setup)
                 int error = loadNeighbourhoodFromFile(optarg, setup->neighbourhood);
 
                 if (error) {
-                    printf("Could not load neigbourhood from file %s. Aborting", optarg);
+                    printf("Could not load neigbourhood from file %s. Aborting\n", optarg);
                     exit(EXIT_FAILURE);
                 }
+
+                printf("Loaded neighbourhood mask:\n");
+                for (int i = 0; i < 3; i++) {
+                    for (int j = 0; j < 3; j++)
+                        printf("%d ", setup->neighbourhood[i][j]);
+
+                    printf("\n");
+                }
+
                 break;
             case 'h':
                 printf(HELPTEXT, args[0]);
@@ -108,10 +117,7 @@ static int loadNeighbourhoodFromFile(char* filename, bool neighbourhood[3][3])
 
     int c, row = 0, col = 0;
     while ((c = getc(f)) != EOF) {
-        if (row == 1 && col == 1) {
-            col++;
-            continue;
-        }
+        if (row == 1 && col == 1) col++;
 
         if ((int) (col / 2) == 3) col = 0;
 
@@ -123,7 +129,7 @@ static int loadNeighbourhoodFromFile(char* filename, bool neighbourhood[3][3])
                 col = 0;
                 break;
             case '1':
-                neighbourhood[row][col] = true;
+                neighbourhood[row][(int) (col / 2)] = true;
                 // fall-through
             default:
                 col++;
