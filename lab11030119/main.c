@@ -19,6 +19,14 @@ int main(int argCount, char* args[])
 
     initalizeWithArguments(argCount, args, &setup);
 
+    printf("Iteration delay: ");
+    if (setup.delay.tv_nsec == 0 && setup.delay.tv_sec == 0)
+        printf("manual\n");
+    else
+        printf("%lums\n", setup.delay.tv_sec * 1000 + (setup.delay.tv_nsec / 1000000L));
+
+    printf("Rules: %s/%s", setup.cellSurviveNumbers, setup.createNewCellNumbers);
+
     Board boardCurrent, boardNext;
 
     FILE* initialStateFile = fopen(setup.boardFilename, "r");
