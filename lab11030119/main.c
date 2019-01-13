@@ -25,7 +25,7 @@ int main(int argCount, char* args[])
     else
         printf("%lums\n", setup.delay.tv_sec * 1000 + (setup.delay.tv_nsec / 1000000L));
 
-    printf("Rules: %s/%s", setup.cellSurviveNumbers, setup.createNewCellNumbers);
+    printf("Rules: %s/%s\n", setup.cellSurviveNumbers, setup.createNewCellNumbers);
 
     Board boardCurrent, boardNext;
 
