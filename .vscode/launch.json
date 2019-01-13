@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${fileDirname}/gameOfLife.out",
-            "args": [],
+            "args": ["boards/test.txt"],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
             "environment": [],
