@@ -8,8 +8,6 @@
 
 int board_new(Board* this)
 {
-    if (this == NULL) return -2;
-
     this->cells = (bool**) calloc(this->size, sizeof(bool*));
 
     if (this->cells == NULL) return -1;
@@ -95,7 +93,7 @@ void board_loadFromFile(Board* this, FILE* file)
     col = row = 0;
 
     while ((c = getc(file)) != EOF) {
-        if (col == this->size) col = 0;
+        if ((unsigned int) (col / 2) == this->size) col = 0;
         if (row == this->size) break;
 
         switch (c) {
@@ -104,10 +102,10 @@ void board_loadFromFile(Board* this, FILE* file)
                 col = 0;
                 break;
             case '1':
-                this->cells[row][col] = true;
+                this->cells[row][(unsigned int) (col / 2)] = true;
                 this->cellCount++;
                 // fall through
-            case '0':
+            default:
                 col++;
                 break;
         }
