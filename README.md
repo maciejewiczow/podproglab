@@ -8,6 +8,16 @@ Program przyjmuje różne parametry, określające zasady przejścia, sąsiedztw
 
 W tej wersji komórki docierające do krawędzi planszy znikają.
 
+# Kompilacja
+
+Kompilacja odbywa się za pomocą uruchomienia komendy
+
+```bash
+make lifegame
+```
+
+Skompilowany program znjdzie się w nowym folderze /bin
+
 # Parametry
 
 Program przyjmuje 5 różnych parametrów:
@@ -41,7 +51,7 @@ Zaczyna symulację z sybkością 300ms ze stanem zapisanym w pliku board.txt
 Zaczyna symulację na zasadach 012345678/3 z szybkością 4fps
 
 ```bash
-./gameOfLife -s 012345678 -c 3 -d 250 boards/plansza.txt
+./gameOfLife.out -s 012345678 -c 3 -d 250 boards/plansza.txt
 ```
 
 # Formaty plików wejściowych
