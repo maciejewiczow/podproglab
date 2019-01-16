@@ -10,6 +10,7 @@ run: lifegame
 	wmctrl -a 'Terminal'
 
 lifegame:
+	mkdir -p bin
 	cd ./src && \
 	$(CC) $(CFLAGS) $(FILES) -o ../bin/$(OUT) $(LIB)
 
