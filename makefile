@@ -5,6 +5,8 @@ LIB= -lm
 FILES= main.c board.c arguments.c
 OUT= gameOfLife.out
 
+all: lifegame
+
 run: lifegame
 	gnome-terminal --profile holdopen -- ./bin/$(OUT) boards/test.txt
 	wmctrl -a 'Terminal'
