@@ -85,6 +85,24 @@ void board_countAliveCells(Board* this)
             if (this->cells[i][j]) this->cellCount++;
 }
 
+unsigned int board_countAliveCellsAroundInd(
+    const Board* b, unsigned int i, unsigned int j, const bool neighbourhood[3][3])
+{
+    unsigned int result = 0;
+
+    for (int y = -1; y <= 1; y++) {
+        // skip this index if checked cell is on the edge of board
+        if (i == 0 || i + 1 == b->size) continue;
+        for (int x = -1; x <= 1; x++) {
+            // also skip
+            if (j == 0 || j + 1 == b->size) continue;
+            if (b->cells[y + i][x + j] && neighbourhood[y + 1][x + 1]) result++;
+        }
+    }
+
+    return result;
+}
+
 void board_loadFromFile(Board* this, FILE* file)
 {
     unsigned int col, row;
@@ -111,7 +129,7 @@ void board_loadFromFile(Board* this, FILE* file)
         }
     }
 
-    // bring the file struct to previous state, because why not
+    // rewind file after finishing, because why not
     fseek(file, 0, SEEK_SET);
 }
 

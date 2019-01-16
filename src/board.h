@@ -73,6 +73,22 @@ unsigned int board_getSizeFromFile(FILE*);
 void board_countAliveCells(Board*);
 
 /**
+ * Counts number of alive cells sorrounding specified index (i, j) in provided Board. Uses provided
+ * neighbourhood mask to determine, which cells should be counted.
+ * If input cell is on edge of board, all places outside the board are treated like dead cells
+ *
+ * @param const Board* - pointer to board, on whitch cells are counted
+ * @param unsigned int - row # of target cell
+ * @param unsigned int - col # of target cell
+ * @param const bool[3][3] - 3x3 matrix of bools, each determines if cell on corresponding board
+ * place should be counted or not
+ *
+ * @returns number of alive cells in the neighbourhood of specified cell
+ */
+unsigned int
+    board_countAliveCellsAroundInd(const Board*, unsigned int, unsigned int, const bool[3][3]);
+
+/**
  * Copies entire content of one board to another
  * @param 1 - source
  * @param 2 - destination

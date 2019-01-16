@@ -9,7 +9,6 @@
 #include "board.h"
 
 void simulate(Board*, Board*, const Settings*);
-unsigned int countNeighbouringCells(const Board*, unsigned int, unsigned int, const bool[3][3]);
 void clearLines(unsigned int);
 bool isAnyOf(int, char*);
 
@@ -79,24 +78,6 @@ void clearLines(unsigned int lncount)
         printf(CLEAR_LINE_CHAR "\r" MOVE_COURSOR_UP_CHAR);
 }
 
-unsigned int countNeighbouringCells(
-    const Board* b, unsigned int i, unsigned int j, const bool neighbourhood[3][3])
-{
-    unsigned int result = 0;
-
-    for (int y = -1; y <= 1; y++) {
-        // skip this index if checked cell is on the edge of board
-        if (i == 0 || i + 1 == b->size) continue;
-        for (int x = -1; x <= 1; x++) {
-            // also skip
-            if (j == 0 || j + 1 == b->size) continue;
-            if (b->cells[y + i][x + j] && neighbourhood[y + 1][x + 1]) result++;
-        }
-    }
-
-    return result;
-}
-
 void simulate(Board* curr, Board* next, const Settings* settings)
 {
     assert(next->size == curr->size);
@@ -108,7 +89,7 @@ void simulate(Board* curr, Board* next, const Settings* settings)
         for (unsigned int i = 0; i < curr->size; i++) {
             for (unsigned int j = 0; j < curr->size; j++) {
                 unsigned int neighbCount =
-                    countNeighbouringCells(curr, i, j, settings->neighbourhood);
+                    board_countAliveCellsAroundInd(curr, i, j, settings->neighbourhood);
 
                 // alive cells tested against dying
                 if (curr->cells[i][j] && !isAnyOf(neighbCount, settings->cellSurviveNumbers))
@@ -145,6 +126,7 @@ bool isAnyOf(int x, char* possible)
     bool result = false;
 
     for (int i = 0; possible[i] != '\0'; i++) {
+        // ignore non-digits
         if (!isdigit(possible[i])) continue;
         char curr = possible[i] - '0';
 
