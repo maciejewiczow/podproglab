@@ -67,10 +67,8 @@ unsigned int board_getSizeFromFile(FILE* file)
     unsigned int result = 0;
     int c;
 
-    while ((c = getc(file)) != EOF) {
-        if (c == '\n') break;
+    while ((c = getc(file)) != EOF && c != '\n')
         result++;
-    }
 
     // revind file pointer, to avoid errors with loading board from the same struct later
     fseek(file, 0, SEEK_SET);
