@@ -14,7 +14,7 @@ Kompilacja odbywa się za pomocą uruchomienia komendy
 make lifegame
 ```
 
-Skompilowany program znjdzie się w nowym folderze /bin
+Skompilowany program znjdzie się w folderze bazowym projektu
 
 # Parametry
 
