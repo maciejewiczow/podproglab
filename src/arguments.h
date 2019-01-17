@@ -1,9 +1,9 @@
 #ifndef __GUARD_ARGS_H
 #define __GUARD_ARGS_H
 
-#include "stdbool.h"
-#include "time.h"
-#include "unistd.h"
+#include <stdbool.h>
+#include <time.h>
+#include <unistd.h>
 
 #define HELPTEXT                                                                                   \
     "Usage: %s <file> [OPTIONS]\n"                                                                 \
@@ -33,8 +33,8 @@
  *      empty place. Format is the same as in previous field.
  */
 typedef struct settings {
-    bool neighbourhood[3][3];
     struct timespec delay;
+    bool neighbourhood[3][3];
     char* boardFilename;
     char* cellSurviveNumbers;
     char* createNewCellNumbers;
