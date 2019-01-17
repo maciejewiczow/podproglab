@@ -1,12 +1,10 @@
 # Gra w życie
 
-Symulacja życia organizmów na dwuwymiarowej planszy
+Symulacja życia komórek na dwuwymiarowej planszy. Odbywa sie na bardzo prostych zasadach, określających jedynie kiedy żywa komórka przeżywa daną jednostę czasu, a kiedy nie oraz kiedy na pustym miejscu powstaje nowa komórka. Jest to najprostszy przykład automatu komórkowego.
+Szerszy opis zagadnienia dostępny [tutaj](https://pl.wikipedia.org/wiki/Gra_w_%C5%BCycie).
 
-Szerszy opis zagadnienia dostępny [tutaj](https://pl.wikipedia.org/wiki/Gra_w_%C5%BCycie)
-
-Program przyjmuje różne parametry, określające zasady przejścia, sąsiedztwo i reguły gry.
-
-W tej wersji komórki docierające do krawędzi planszy znikają.
+Program przyjmuje różne parametry, określające początkowy stan planszy, sąsiedztwo i reguły gry.
+W tej wersji komórki na skraju planszy traktowane są tak, jakby zamiast krawędzi był tam kolejny rząd martwych komórek.
 
 # Kompilacja
 
@@ -128,4 +126,4 @@ Sąsiedztwo von Neumanna
 
 ## Licencja
 
-Ten program jest udostępniany na bazie licencji [MIT](./../LICENSE)
+Ten program jest udostępniany na bazie licencji [MIT](./LICENSE)
