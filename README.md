@@ -24,7 +24,7 @@ Program przyjmuje 5 różnych parametrów:
     Liczba milisekund dzielących kolejne iteracje. Domyślna wartość to 1000 (1s). Gdy wynosi 0 to program oczekuje na naciśnięcie klawisza ENTER po każdej iteracji.
 
 -   **-n, --neighbourhood**
-    Nazwa pliku tekstowego zawierającego maskę sąsiedztwa. Więcej formacie i działaniu tego pliku [tutaj](#plik-sąsiedztwa)
+    Nazwa pliku tekstowego zawierającego maskę sąsiedztwa. Więcej o formacie i działaniu tego pliku [tutaj](#plik-sąsiedztwa)
 -   **-c, --createnum**
     Ciąg cyfr, oznaczający liczby (0-8) żywych sąsiadów, dla których na pustym polu powstaje nowa komórka.
 -   **-s, --surviveum**
